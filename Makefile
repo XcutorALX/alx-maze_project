@@ -1,7 +1,7 @@
 # Define compiler and compiler flags
 CC = gcc
-CFLAGS = -I./include $(shell sdl2-config --cflags)
-LDFLAGS = -lm $(shell sdl2-config --libs)
+CFLAGS = -I./include $(shell sdl2-config --cflags) -g
+LDFLAGS = -lm $(shell sdl2-config --libs) -g
 
 # Define the target executable
 TARGET = build/maze

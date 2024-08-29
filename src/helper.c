@@ -10,11 +10,11 @@
  *
  * Return: 1 for collision 0 for no collision
  */
-int check_collision_vert(Grid *grid, Ray *ray)
+Point check_collision_vert(Grid *grid, Ray *ray)
 {
 	Point vert;
 	Cell **map = grid->cells;
-	int xa, ya, collision;
+	int xa, ya, collision, y_index, x_index;
 
 	if (ray->dir > 90 && ray->dir < 270 )
 	{
@@ -33,20 +33,25 @@ int check_collision_vert(Grid *grid, Ray *ray)
 	ya = (ray->dir < 180) ? -1 * ya : ya;
 
 	collision = 0;
-	while (vert.x / 64 < grid->width && vert.y / 64 < grid->height && collision == 0)
+	y_index = custom_round((float)(vert.y) / (float)64);
+        x_index = vert.x / 64;
+	while (x_index < grid->width && y_index < grid->height && collision == 0)
 	{
-		printf("%d, %d\n", vert.x, vert.y);
-		if ((&(map[vert.y / 64 ][vert.x / 64]))->type == 1)
+		if ((&(map[ y_index ][ x_index ]))->type == 1)
 			collision = 1;
 		else
 		{
 			vert.x += xa;
 			vert.y += ya;
 		}
+		y_index = custom_round((float)(vert.y) / (float)64);
+                x_index = vert.x / 64;
 	}
 
-	printf("%d, %d\n", vert.x / 64 , vert.y / 64);
-	return (1);
+	if (collision == 1)
+		return (vert);
+	vert.x = -1;
+	return (vert);
 }
 
 /**
@@ -57,11 +62,11 @@ int check_collision_vert(Grid *grid, Ray *ray)
  *
  * Return: pointer to the collision
  */
-Point *check_collision_hor(Grid *grid, Ray *ray)
+Point check_collision_hor(Grid *grid, Ray *ray)
 {
 	Point hor;
 	Cell **map = grid->cells;
-	int xa, ya, collision;
+	int xa, ya, collision, x_index, y_index;
 
 	if (ray->dir < 180)
 	{
@@ -80,20 +85,25 @@ Point *check_collision_hor(Grid *grid, Ray *ray)
 	xa = (ray->dir > 180  && ray->dir < 270) ? -1 * xa : xa;
 
 	collision = 0;
-	while (hor.x / 64 < grid->width && hor.y / 64 < grid->height && collision == 0)
+	x_index = custom_round((float)(hor.x) / (float)64);
+	y_index = hor.y / 64;
+	while (x_index < grid->width && y_index < grid->height && collision == 0)
 	{
-		printf("%d, %d\n", hor.x, hor.y);
-		if ((&(map[hor.y / 64 ][hor.x / 64]))->type == 1)
+		if ((&(map[ y_index ][ x_index ]))->type == 1)
 			collision = 1;
 		else
 		{
 			hor.x += xa;
 			hor.y += ya;
 		}
+		x_index = custom_round((float)(hor.x) / (float)64);
+		y_index = hor.y / 64;
 	}
 
-	printf("%d, %d\n", hor.x / 64 , hor.y / 64);
-	return (1);
+	if (collision == 1)
+		return (hor);
+	hor.x = -1;
+	return (hor);
 }
 
 
@@ -155,6 +165,20 @@ Grid *create_map(int **arr, int height , int width)
 }
 
 /**
+ * distance_sqrt - calculates the distance between two pts using square root method
+ *
+ * @p1: the first point
+ * @p2: the second point
+ *
+ * Return: the distance between the points
+ */
+int distance_sqrt(Point *p1, Point *p2) {
+    int distance;
+    distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
+    return distance;
+}
+
+/**
  * distance - this function calculates the distance between two points
  *
  * @p: the first point
@@ -166,8 +190,15 @@ Grid *create_map(int **arr, int height , int width)
 int distance(Point *p, Point *q, float deg)
 {
 	int value;
+	float adj_deg;
 
-	value = (p->x - q->x) / cos(deg * M_PI / 180);
+	if (p == NULL || q == NULL)
+		return (0);
+
+	if ((p->x - q->x) == 0)
+		value = (p->y - q->y) / sin(deg * M_PI / 180);
+	else
+		value = (p->x - q->x) / cos(deg * M_PI / 180);
 
 	return (abs(value));
 }

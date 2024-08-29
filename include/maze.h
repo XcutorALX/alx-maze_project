@@ -18,6 +18,7 @@ typedef struct
 typedef struct
 {
 	Point pos;
+	int dir;
 	int fov;
 	int height;
 } Player;
@@ -39,15 +40,18 @@ typedef struct
 typedef struct
 {
 	Point pos;
-	int dir;	
+	float dir;	
 } Ray;
 
 int create_window(SDL_Window **window, Screen *screen);
 Grid *create_map(int **arr, int height, int width);
-int check_collision_vert(Grid *grid, Ray *ray);
-int check_collision_hor(Grid *grid, Ray *ray);
+Point check_collision_vert(Grid *grid, Ray *ray);
+Point check_collision_hor(Grid *grid, Ray *ray);
 int distance(Point *p, Point *q, float deg);
 int saveMap(Grid *map);
 int **loadMap(int *height, int *width);
+int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *renderer);
+int distance_sqrt(Point *p1, Point *p2);
+int custom_round(float value);
 
 #endif
