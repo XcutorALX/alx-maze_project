@@ -12,7 +12,7 @@
 int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *renderer)
 {
 	float inc, angle, value;
-	Point temp, vert, hor;
+	Point vert, hor;
 	Ray ray;
 	int i, x, y, actual_height, height_const, actual_distance;
 
@@ -21,17 +21,15 @@ int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *r
 	height_const = 64 * 554;
 	inc = (float)player->fov / (float)screen->width;
 	ray.dir = (float) (player->dir) - (player->fov / 2);
-	temp.x = 96;
-	temp.y = 96;
-	ray.pos = temp;
+	ray.pos = player->pos;
 
 	for (i = 0; i < screen->width; i++)
 	{
 		if (ray.dir != 0 && ray.dir != 180)
-			vert = check_collision_vert(map, &ray);
+			hor = check_collision_hor(map, &ray);
 
 		if (ray.dir != 90 && ray.dir != 270)
-			hor = check_collision_hor(map, &ray);
+			vert = check_collision_vert(map, &ray);
 
 		x = hor.x != -1 ? distance_sqrt(&(ray.pos), &hor) : -1;
 		y = vert.x  != -1 ? distance_sqrt(&(ray.pos), &vert) : -1;
@@ -46,10 +44,9 @@ int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *r
 			actual_distance = x < y ? x * value : y * value;
 
 
-		actual_height = height_const / actual_distance;
+		actual_height = height_const / actual_distance; 
 		SDL_RenderDrawLine(renderer, i, 240 - (actual_height / 2), 
 				i, 240 + (actual_height / 2));
-		printf("%d, %d\n", i, actual_height);
 		ray.dir += inc;
 	}
 

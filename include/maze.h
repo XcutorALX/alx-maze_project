@@ -11,8 +11,8 @@ typedef struct
 
 typedef struct
 {
-	int x;
-	int y;
+	float x;
+	float y;
 } Point;
 
 typedef struct
@@ -21,6 +21,7 @@ typedef struct
 	int dir;
 	int fov;
 	int height;
+	int speed;
 } Player;
 
 typedef struct
@@ -53,5 +54,7 @@ int **loadMap(int *height, int *width);
 int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *renderer);
 int distance_sqrt(Point *p1, Point *p2);
 int custom_round(float value);
+void move_vert(Player *player, int speed);
+void move_hor(Player *player, int speed);
 
 #endif

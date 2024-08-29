@@ -14,28 +14,30 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 {
 	Point vert;
 	Cell **map = grid->cells;
-	int xa, ya, collision, y_index, x_index;
+	float xa, ya; 
+	int collision, y_index, x_index;
 
 	if (ray->dir > 90 && ray->dir < 270 )
 	{
-		vert.x = floor(ray->pos.x/64) * (64) - 1;
+		vert.x = custom_round(ray->pos.x / 64) * (64) - 1;
 		xa = -64;
 	}
 	else
 	{
-		vert.x = floor(ray->pos.x/64) * (64) + 64;
+		vert.x = custom_round(ray->pos.x / 64) * (64) + 64;
 		xa = 64;
 	}
 
 	vert.y = ray->pos.y + (ray->pos.x - vert.x) * tan(ray->dir * (M_PI / 180.0));
 	ya = 64 * tan(ray->dir * (M_PI / 180.0));
-	ya = abs(ya);
+	ya = ya >= 0 ? ya : -1 * ya;
 	ya = (ray->dir < 180) ? -1 * ya : ya;
 
 	collision = 0;
 	y_index = custom_round((float)(vert.y) / (float)64);
         x_index = vert.x / 64;
-	while (x_index < grid->width && y_index < grid->height && collision == 0)
+	while (x_index < grid->width && x_index >= 0 &&
+			y_index < grid->height && y_index >= 0 && collision == 0)
 	{
 		if ((&(map[ y_index ][ x_index ]))->type == 1)
 			collision = 1;
@@ -66,28 +68,30 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 {
 	Point hor;
 	Cell **map = grid->cells;
-	int xa, ya, collision, x_index, y_index;
+	float xa, ya;
+	int collision, x_index, y_index;
 
 	if (ray->dir < 180)
 	{
-		hor.y = floor(ray->pos.y/64) * (64) - 1;
+		hor.y = custom_round(ray->pos.y/64) * (64) - 1;
 		ya = -64;
 	}
 	else
 	{
-		hor.y = floor(ray->pos.y/64) * (64) + 64;
+		hor.y = custom_round(ray->pos.y/64) * (64) + 64;
 		ya = 64;
 	}
 
 	hor.x = ray->pos.x + (ray->pos.y - hor.y) / tan(ray->dir * (M_PI / 180.0));
 	xa = 64 / tan(ray->dir * (M_PI / 180.0));
-	xa = abs(xa);
+	xa = xa >= 0 ? xa : -1 * xa;
 	xa = (ray->dir > 180  && ray->dir < 270) ? -1 * xa : xa;
 
 	collision = 0;
 	x_index = custom_round((float)(hor.x) / (float)64);
 	y_index = hor.y / 64;
-	while (x_index < grid->width && y_index < grid->height && collision == 0)
+	while (x_index < grid->width && x_index >= 0
+		&& y_index < grid->height && y_index >= 0 && collision == 0)
 	{
 		if ((&(map[ y_index ][ x_index ]))->type == 1)
 			collision = 1;

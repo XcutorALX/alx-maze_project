@@ -1,6 +1,3 @@
-break helper.c:38
-  condition $bpnum ray->dir == 276.34375
-break helper.c:86
-  condition $bpnum ray->dir == 276.34375
+break helper.c:24
 
 
