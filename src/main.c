@@ -73,16 +73,16 @@ int main(void)
             if (event.type == SDL_KEYDOWN) {
 		    switch (event.key.keysym.sym) {
 			    case SDLK_w:
-				    move_vert(&player, player.speed);
+				    move_vert(&player, player.speed, map);
 				    break;
 			    case SDLK_a:
-				    move_hor(&player, -1 * player.speed);
+				    move_hor(&player, -1 * player.speed, map);
 				    break;
 			    case SDLK_s:
-				    move_vert(&player, -1 * player.speed);
+				    move_vert(&player, -1 * player.speed, map);
 				    break;
 			    case SDLK_d:
-				    move_hor(&player, player.speed);
+				    move_hor(&player, player.speed, map);
 				    break;
 			    case SDLK_LEFT:
 				    player.dir -= rot_speed;

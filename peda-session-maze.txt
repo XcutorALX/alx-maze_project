@@ -1,7 +1,3 @@
-break helper.c:42
-  condition $bpnum (ray->dir == 110 && ray->pos.x == 319 && ray->pos.y == 472)
-
-
-
-
+break /home/unchained/alx-maze_project/src/main.c:52
+watch map->height
 
