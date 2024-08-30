@@ -19,12 +19,12 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 
 	if (ray->dir > 90 && ray->dir < 270 )
 	{
-		vert.x = custom_round(ray->pos.x / 64) * (64) - 1;
+		vert.x = floor(ray->pos.x / 64) * (64) - 1;
 		xa = -64;
 	}
 	else
 	{
-		vert.x = custom_round(ray->pos.x / 64) * (64) + 64;
+		vert.x = floor(ray->pos.x / 64) * (64) + 64;
 		xa = 64;
 	}
 
@@ -34,8 +34,8 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 	ya = (ray->dir < 180) ? -1 * ya : ya;
 
 	collision = 0;
-	y_index = custom_round((float)(vert.y) / (float)64);
-        x_index = vert.x / 64;
+	y_index = floor((float)(vert.y) / (float)64);
+        x_index = floor(vert.x / 64);
 	while (x_index < grid->width && x_index >= 0 &&
 			y_index < grid->height && y_index >= 0 && collision == 0)
 	{
@@ -46,8 +46,8 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 			vert.x += xa;
 			vert.y += ya;
 		}
-		y_index = custom_round((float)(vert.y) / (float)64);
-                x_index = vert.x / 64;
+		y_index = floor((float)(vert.y) / (float)64);
+                x_index = floor(vert.x / 64);
 	}
 
 	if (collision == 1)
@@ -73,23 +73,23 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 
 	if (ray->dir < 180)
 	{
-		hor.y = custom_round(ray->pos.y/64) * (64) - 1;
+		hor.y = floor(ray->pos.y/64) * (64) - 1;
 		ya = -64;
 	}
 	else
 	{
-		hor.y = custom_round(ray->pos.y/64) * (64) + 64;
+		hor.y = floor(ray->pos.y/64) * (64) + 64;
 		ya = 64;
 	}
 
 	hor.x = ray->pos.x + (ray->pos.y - hor.y) / tan(ray->dir * (M_PI / 180.0));
 	xa = 64 / tan(ray->dir * (M_PI / 180.0));
 	xa = xa >= 0 ? xa : -1 * xa;
-	xa = (ray->dir > 180  && ray->dir < 270) ? -1 * xa : xa;
+	xa = (ray->dir > 90  && ray->dir < 270) ? -1 * xa : xa;
 
 	collision = 0;
-	x_index = custom_round((float)(hor.x) / (float)64);
-	y_index = hor.y / 64;
+	x_index = floor((float)(hor.x) / (float)64);
+	y_index = floor(hor.y / 64);
 	while (x_index < grid->width && x_index >= 0
 		&& y_index < grid->height && y_index >= 0 && collision == 0)
 	{
@@ -100,8 +100,8 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 			hor.x += xa;
 			hor.y += ya;
 		}
-		x_index = custom_round((float)(hor.x) / (float)64);
-		y_index = hor.y / 64;
+		x_index = floor((float)(hor.x) / (float)64);
+		y_index = floor(hor.y / 64);
 	}
 
 	if (collision == 1)

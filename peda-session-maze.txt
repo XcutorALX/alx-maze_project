@@ -1,3 +1,7 @@
-break helper.c:24
+break helper.c:42
+  condition $bpnum (ray->dir == 110 && ray->pos.x == 319 && ray->pos.y == 472)
+
+
+
 
 

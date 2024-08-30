@@ -15,12 +15,9 @@ void move_vert(Player *player, int speed)
 
 	x_change = speed * cos(player->dir * (M_PI / 180));
 	y_change = -speed * sin(player->dir * (M_PI / 180));
-	printf("%f, %f\n", player->pos.x, player->pos.y);
 
 	player->pos.x += x_change;
 	player->pos.y += y_change;
-	printf("%d, %d\n", x_change, y_change);
-	printf("%f, %f\n", player->pos.x, player->pos.y);
 }
 
 /**
@@ -38,12 +35,7 @@ void move_hor(Player *player, int speed)
 	deg = player->dir - 90;
 	x_change = -speed * cos(deg * (M_PI / 180));
 	y_change = speed * sin(deg * (M_PI / 180));
-	printf("%f, %f\n", player->pos.x, player->pos.y);
 
-
-	printf("%d, %d\n", x_change, y_change);
 	player->pos.x += x_change;
 	player->pos.y += y_change;
-	printf("%f, %f\n", player->pos.x, player->pos.y);
-
 }

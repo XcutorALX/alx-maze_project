@@ -51,11 +51,11 @@ int main(void)
 
 	player.fov = 60;
 	player.height = 32;
-	player.dir = 0;
+	player.dir = 270;
 	pos.x = 96;
 	pos.y = 96;
 	player.pos = pos;
-	player.speed = 8;
+	player.speed = 4;
 	rot_speed = 5;
 
 	screenSurface = SDL_GetWindowSurface( window );
@@ -95,7 +95,6 @@ int main(void)
 				    break;
             		}
 	    }
-	    printf("%d\n", player.dir);
 
 	    if (player.dir >= 360)
 		    player.dir = fmod(player.dir, 360);
@@ -104,7 +103,6 @@ int main(void)
 
 	    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	    SDL_RenderClear(renderer);
-	    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	    render_background(map, &player, &screen, renderer);
 	    SDL_RenderPresent(renderer);		    
 	}
