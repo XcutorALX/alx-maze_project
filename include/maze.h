@@ -56,5 +56,8 @@ int distance_sqrt(Point *p1, Point *p2);
 int custom_round(float value);
 void move_vert(Player *player, int speed);
 void move_hor(Player *player, int speed);
+int render_wall(int column, Point vert, Point hor, Ray ray, Player *player, SDL_Renderer *renderer);
+void render_floor(int i, int wall_height, SDL_Renderer *renderer, Screen *screen);
+void render_sky(int i, int wall_height, SDL_Renderer *renderer, Screen *screen);
 
 #endif
