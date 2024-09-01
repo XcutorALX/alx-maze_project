@@ -70,6 +70,8 @@ int render_wall(int column, Point vert, Point hor, Ray ray,
 	}
 	align == 1 ? SDL_SetRenderDrawColor(renderer, 112, 112, 112, 255) : 
 		SDL_SetRenderDrawColor(renderer, 96, 96, 96, 255);
+	if (actual_distance == 0)
+		actual_distance = 1;
 	actual_height = height_const / actual_distance; 
 	SDL_RenderDrawLine(renderer, column, 240 - (actual_height / 2), 
 			column, 240 + (actual_height / 2));

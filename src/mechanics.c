@@ -16,7 +16,7 @@ void move_vert(Player *player, int speed, Grid *map)
 	Cell **cells;
 
 	cells = map->cells;
-	cor = 16;
+	cor = 32;
 	temp_x = player->pos.x;
 	temp_y = player->pos.y;
 
