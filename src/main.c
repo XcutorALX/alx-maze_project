@@ -25,6 +25,9 @@ int main(void)
 	}
 	screen.width = 640;
 	screen.height = 480;
+	screen.map_height = floor(0.33 * screen.height);
+	screen.map_width = floor(0.33 * screen.width);
+	screen.map_block_size = floor(screen.map_height / 7);
 	if  (create_window(&window, &screen) == 1)
 	{
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());

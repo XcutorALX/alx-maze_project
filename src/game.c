@@ -17,15 +17,15 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen)
 
 	rect.x = 0.02 * screen.width;
 	rect.y = 0.02 * screen.height;
-	rect.w = floor(0.33 * screen.width);
-	rect.h = floor(0.33 * screen.height);
+	rect.w = screen.map_width;
+	rect.h = screen.map_height;
 	x = (rect.x + rect.w) / 2;
 	y = (rect.y + rect.h) / 2;
-
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &rect);
 	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
 	drawCircle(renderer, x, y, 0.02 * rect.w);
+	localMap(player, map);
 	return (1);
 }
 

@@ -53,7 +53,7 @@ void move_vert(Player *player, float speed, Grid *map)
 
 	dir = floor(player->dir);
 	cells = map->cells;
-	cor = 16;
+	cor = 8;
 	temp_x = player->pos.x;
 	temp_y = player->pos.y;
 

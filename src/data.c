@@ -66,3 +66,23 @@ int **loadMap(int *height, int *width)
     fclose(file);
     return (map);
 }
+
+/**
+ * localMap - creates a two dimensional array to simulate the
+ * 	local map around the player
+ *
+ * @player: the player struct
+ * @map: the map of the game
+ *
+ * Return: a two dimensional array
+ */
+int **localMap(Player player, Grid *map)
+{
+	int x_index, y_index;
+	
+	x_index = floor(player.pos.x / 64);
+	y_index = floor(player.pos.y / 64);
+
+
+	return (NULL);
+}

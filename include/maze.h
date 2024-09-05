@@ -14,6 +14,9 @@ typedef struct
 {
 	int height;
 	int width;
+	int map_block_size;
+	int map_width;
+	int map_height;
 } Screen;
 
 typedef struct
@@ -84,5 +87,6 @@ void handle_key_event(int code, Gamepad *keys, int status);
 void normalize(Player *player, Player *prev, float speed);
 float distance_flt(Point *p1, Point *p2);
 void drawCircle(SDL_Renderer *renderer, int centerX, int centerY, int radius);
+int **localMap(Player player, Grid *map);
 
 #endif
