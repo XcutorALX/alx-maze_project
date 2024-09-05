@@ -183,6 +183,21 @@ int distance_sqrt(Point *p1, Point *p2) {
 }
 
 /**
+ * distance_flt - calculates the distance between two pts using square root method
+ *
+ * @p1: the first point
+ * @p2: the second point
+ *
+ * Return: the distance between the points
+ */
+float distance_flt(Point *p1, Point *p2) {
+    float distance;
+    distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
+    return distance;
+}
+
+
+/**
  * distance - this function calculates the distance between two points
  *
  * @p: the first point

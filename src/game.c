@@ -3,6 +3,35 @@
 #include <stdlib.h>
 
 /**
+ * render_map - this function renders the game map on screen
+ *
+ * @player: the player struct
+ * @map: a map of the game
+ *
+ * Return: 1 on success 0 on failure
+ */
+int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen)
+{
+	SDL_Rect rect;
+	int x, y;
+
+	rect.x = 0.02 * screen.width;
+	rect.y = 0.02 * screen.height;
+	rect.w = floor(0.33 * screen.width);
+	rect.h = floor(0.33 * screen.height);
+	x = (rect.x + rect.w) / 2;
+	y = (rect.y + rect.h) / 2;
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderFillRect(renderer, &rect);
+	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
+	drawCircle(renderer, x, y, 0.02 * rect.w);
+	return (1);
+}
+
+
+
+/**
  * render_background - this function renders the background of the maze
  *
  * @map: the map of the game
@@ -19,7 +48,7 @@ int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *r
 	vert.x = -1;
 	hor.x = -1;
 	inc = (float)player->fov / (float)screen->width;
-	ray.dir = (float) (player->dir) - (player->fov / 2);
+	ray.dir = player->dir - (player->fov / 2);
 	ray.pos = player->pos;
 	for (i = 0; i < screen->width; i++)
 	{

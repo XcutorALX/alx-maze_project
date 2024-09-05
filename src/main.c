@@ -79,8 +79,8 @@ int init_game(Player *player, Grid **map)
 	player->dir = 270;
 	player->pos.x = 96;
 	player->pos.y = 96;
-	player->speed = 4;
-	player->rot_speed = 8;
+	player->speed = 200;
+	player->rot_speed = 200;
 
 	return (0);
 }
@@ -101,6 +101,9 @@ int game_loop(Grid *map, SDL_Renderer *renderer,
 	int running;
 	SDL_Event event;
 	Gamepad keys;
+	Uint32 last_time, current_time;
+	float dt, adj_speed, adj_rot, temp;
+	Player prev;
 
 	keys.left = 0;
 	keys.right = 0;
@@ -110,23 +113,51 @@ int game_loop(Grid *map, SDL_Renderer *renderer,
 	keys.rot_right = 0;
 
 	running = 1;
+	last_time = SDL_GetTicks();
 	while (running)
 	{
+		current_time = SDL_GetTicks();
+		dt = (current_time - last_time) / 1000.0f;
+		last_time = current_time;
+		adj_speed = dt * player.speed;
+		adj_rot = dt * player.rot_speed;
+		prev.pos.x = player.pos.x;
+		prev.pos.y = player.pos.y;
+
 		while (SDL_PollEvent(&event))
 		{
 			if (event_handler(event, &player, map, &keys) == 0)
 				running = 0;
-
-			if (player.dir >= 360)
-				player.dir = fmod(player.dir, 360);
-			else if (player.dir < 0)
-				player.dir += 360;
-
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			SDL_RenderClear(renderer);
-			render_background(map, &player, &screen, renderer);
-			SDL_RenderPresent(renderer);
 		}
+
+		if (keys.rot_left)
+			player.dir -= adj_rot;
+
+		if (keys.rot_right)
+			player.dir += adj_rot;
+
+		if (player.dir >= 360)
+			player.dir = player.dir -= 360;
+		else if (player.dir < 0)
+			player.dir += 360;
+
+		if (keys.forward)
+			move_vert(&player, adj_speed, map);
+
+		if (keys.backward)
+			move_vert(&player, -1 * adj_speed, map);
+
+		if (keys.left)
+			move_hor(&player, -1 * adj_speed, map);
+
+		if (keys.right)
+			move_hor(&player, adj_speed, map);
+
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+		SDL_RenderClear(renderer);
+		render_background(map, &player, &screen, renderer);
+		render_map(map, player, renderer, screen);
+		SDL_RenderPresent(renderer);
 	}
 
 	return (0);
@@ -155,22 +186,5 @@ int event_handler(SDL_Event event, Player *player, Grid *map, Gamepad *keys)
 
 	handle_key_event(event.key.keysym.sym, keys, status);
 
-	if (keys->rot_left)
-		player->dir -= player->rot_speed;
-
-	if (keys->rot_right)
-		player->dir += player->rot_speed;
-
-	if (keys->forward)
-		move_vert(player, player->speed, map);
-
-	if (keys->backward)
-		move_vert(player, -1 * player->speed, map);
-
-	if (keys->left)
-		move_hor(player, -1 * player->speed, map);
-
-	if (keys->right)
-		move_hor(player, player->speed, map);
 	return (1);
 }
