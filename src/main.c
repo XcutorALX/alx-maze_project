@@ -16,7 +16,7 @@ int main(void)
 	Screen screen;
 	Player player;
 	Grid *map;
-	int height, width, **arr, running, rot_speed;
+	int height, width, **arr, running, rot_speed, **local_map;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
@@ -42,13 +42,13 @@ int main(void)
 		SDL_Quit();
 		return (1);
 	}
-	if (init_game(&player, &map) == 1)
+	if (init_game(&player, &map, &local_map) == 1)
 	{
 		printf("Game could not be initiated! initiation error");
 		return (1);
 	}
 	screenSurface = SDL_GetWindowSurface(window);
-	game_loop(map, renderer, player, screen);
+	game_loop(map, renderer, player, screen, local_map);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	return (0);
@@ -63,7 +63,7 @@ int main(void)
  *
  * Return: 1 on success and 0 on failure
  */
-int init_game(Player *player, Grid **map)
+int init_game(Player *player, Grid **map, int ***local_map)
 {
 	int height, width, **arr;
 
@@ -85,6 +85,10 @@ int init_game(Player *player, Grid **map)
 	player->speed = 200;
 	player->rot_speed = 200;
 
+	*local_map = create2DArray(7, 13);
+	if (*local_map == NULL)
+		return (1);	
+
 	return (0);
 }
 
@@ -99,7 +103,7 @@ int init_game(Player *player, Grid **map)
  * Return: 0 on success and 1 on failure
  */
 int game_loop(Grid *map, SDL_Renderer *renderer,
-		Player player, Screen screen)
+		Player player, Screen screen, int **local)
 {
 	int running;
 	SDL_Event event;
@@ -159,7 +163,7 @@ int game_loop(Grid *map, SDL_Renderer *renderer,
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 		SDL_RenderClear(renderer);
 		render_background(map, &player, &screen, renderer);
-		render_map(map, player, renderer, screen);
+		render_map(map, player, renderer, screen, local);
 		SDL_RenderPresent(renderer);
 	}
 

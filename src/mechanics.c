@@ -53,7 +53,7 @@ void move_vert(Player *player, float speed, Grid *map)
 
 	dir = floor(player->dir);
 	cells = map->cells;
-	cor = 8;
+	cor = 12;
 	temp_x = player->pos.x;
 	temp_y = player->pos.y;
 
@@ -87,22 +87,28 @@ void move_vert(Player *player, float speed, Grid *map)
 void move_hor(Player *player, float speed, Grid *map)
 {
 	float x_change, y_change, temp_x, temp_y,
-	    deg, cor, x_cor, y_cor;
+	    deg, cor, x_cor, y_cor, cos_val, sin_val;
 	int x_index, y_index, dir;
 	Cell **cells;
 
+	cos_val = cos(deg * (M_PI / 180));
+	sin_val = sin(deg * (M_PI / 180));
 	dir = floor(player->dir);
 	cells = map->cells;
 	temp_x = player->pos.x;
 	temp_y = player->pos.y;
-	cor = 8;
+	cor = 12;
 
 	deg = dir - 90;
-	x_change = -speed * cos(deg * (M_PI / 180));
-	y_change = speed * sin(deg * (M_PI / 180));
+	x_change = -speed * cos_val;
+	y_change = speed * sin_val;
 
+	x_cor = -cor * cos_val;
+	y_cor = cor * sin_val;
+/**
 	x_cor = deg > 90 && deg < 270? -cor : cor;
 	y_cor = deg < 180 ? -cor : cor;
+	**/
 
 	temp_x += x_change;
 	temp_y += y_change;

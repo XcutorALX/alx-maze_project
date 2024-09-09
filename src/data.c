@@ -68,21 +68,107 @@ int **loadMap(int *height, int *width)
 }
 
 /**
- * localMap - creates a two dimensional array to simulate the
- * 	local map around the player
+ * localMap - edits a two dimensional array to reflect player vicinity
  *
  * @player: the player struct
  * @map: the map of the game
+ * @local_map: the local map
  *
- * Return: a two dimensional array
+ * Return: 1 for success and 0 for failure
  */
-int **localMap(Player player, Grid *map)
+
+int localMap(Player player, Grid *map, int **local)
 {
-	int x_index, y_index;
-	
-	x_index = floor(player.pos.x / 64);
-	y_index = floor(player.pos.y / 64);
+	int x_start, x_index, y_index,
+	    player_x, player_y, i;
+	Cell **cells = map->cells;
 
+	player_x = floor(player.pos.x / 64);
+	player_y = floor(player.pos.y / 64);
+	y_index = player_y - 3;
+	x_index = player_x - 6;
+	x_start = x_index;
+	i = 0;
 
-	return (NULL);
+	while (y_index < 0)
+	{
+		for (x_index = x_start; x_index <= player_x + 6; x_index++)
+			local[i][x_index - x_start] = 0;
+		y_index++;
+		i++;
+	}
+
+	for (; y_index <= player_y + 3; y_index++)
+	{
+		if (y_index >= map->height)
+		{
+			for (x_index = x_start; x_index <= player_x + 6; x_index++)
+				local[y_index - player_y + 3][x_index - x_start] = 0;
+		}
+		else
+		{
+			for (x_index = x_start; x_index <= player_x + 6; x_index++)
+			{
+				if (x_index < 0 || x_index >= map->width)
+					local[y_index - player_y + 3][x_index - x_start] = 0;
+				else
+					local[y_index - player_y + 3][x_index - x_start] = cells[y_index][x_index].type;
+			}
+		}
+	}
+
+	return (1);
+}
+
+/**
+ * create2DArray - this function helps create a 2d array
+ *
+ * @rows: the size of the rows
+ * @cols: the size of the columns
+ *
+ * Return: a pointer to the allocated array
+ */
+int **create2DArray(int rows, int cols)
+{
+	int **array;
+	array = malloc(rows * sizeof(int*));
+	if (array == NULL)
+	{
+        	printf("Memory allocation failed for rows.\n");
+        	return NULL;
+	}
+
+	for (int i = 0; i < rows; i++)
+	{
+		array[i] = (int*)malloc(cols * sizeof(int));
+		if (array[i] == NULL)
+		{
+			printf("Memory allocation failed for row %d.\n", i);
+			for (int j = 0; j < i; j++)
+				free(array[j]);
+			free(array);
+			return (NULL);
+		}
+	}
+
+	return (array);
+}
+
+/**
+ * free2DArray - this function frees a two dimensional array
+ *
+ * @array: the array
+ * @rows: the size of the array
+ *
+ * Return: void
+ */
+void free2DArray(int** array, int rows)
+{
+	int i;
+
+	for (int i = 0; i < rows; i++)
+	{
+		free(array[i]);
+	}
+	free(array);
 }
