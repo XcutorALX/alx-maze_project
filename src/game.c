@@ -14,8 +14,9 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 {
 	SDL_Rect rect, cell;
 	int x, y, cell_size_x, cell_size_y, x_index,
-	    y_index, length;
+	    y_index, length, view;
 
+	view = player.fov;
 	rect.x = 0.02 * screen.width;
 	rect.y = 0.02 * screen.height;
 	rect.w = screen.map_width;
@@ -29,6 +30,7 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
 	drawCircle(renderer, x, y, 0.02 * rect.w);
 	localMap(player, map, local);
+	draw_radial_cone(renderer, x, y, view, 60, 30, floor(player.dir));
 	x = rect.x;
 /**	y = rect.y + cell_size_y + 1;
 
