@@ -107,6 +107,7 @@ void move_hor(Player *player, float speed, Grid *map)
 	temp_x += x_change;
 	temp_y += y_change;
 
+
 	x_index = floor((temp_x + x_cor) / 64);
 	y_index = floor((temp_y + y_cor) / 64);
 
