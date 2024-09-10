@@ -116,8 +116,30 @@ int localMap(Player player, Grid *map, int **local)
 			}
 		}
 	}
+	mirrorArray(local, 7, 13);
 
 	return (1);
+}
+
+void mirrorArray(int **arr, int rows, int cols)
+{
+	int start, end, temp, i;
+
+	for (i = 0; i < rows; i++)
+	{
+		start = 0;
+		end = cols - 1;
+
+		while (start < end)
+		{
+			temp = arr[i][start];
+			arr[i][start] = arr[i][end];
+			arr[i][end] = temp;
+		
+			start++;
+			end--;
+		}
+	}
 }
 
 /**

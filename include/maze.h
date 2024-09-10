@@ -92,5 +92,6 @@ void free2DArray(int** array, int rows);
 int **create2DArray(int rows, int cols);
 void print2DArray(int** array, int rows, int cols);
 void draw_radial_cone(SDL_Renderer *renderer, int center_x, int center_y,                                                               float cone_angle_deg, float length, int num_lines, float dir_deg);
+void mirrorArray(int **arr, int rows, int cols);
 
 #endif
