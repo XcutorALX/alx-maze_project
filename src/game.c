@@ -17,7 +17,7 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 	    y_index, length, view, deg;
 
 	view = player.fov;
-	deg = 180 - player.dir;
+	deg = 150 - player.dir;
 	deg %= 360;
 	rect.x = 0.02 * screen.width;
 	rect.y = 0.02 * screen.height;
@@ -25,8 +25,8 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 	rect.h = screen.map_height;
 	cell_size_y = rect.h / 7;
 	cell_size_x = rect.w / 13;
-	x = (rect.x + rect.w) / 2;
-	y = (rect.y + rect.h) / 2;
+	x = rect.x + rect.w / 2;
+	y = rect.y + rect.h / 2;
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &rect);
 	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
@@ -34,7 +34,7 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 	localMap(player, map, local);
 	draw_radial_cone(renderer, x, y, view, 60, 30, deg);
 	x = rect.x;
-/**	y = rect.y + cell_size_y + 1;
+	y = rect.y + cell_size_y + 1;
 
 	for (; y <= rect.y + rect.h - cell_size_y; y += cell_size_y)
 	{
@@ -50,8 +50,8 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 		length = rect.y + rect.h;
 		SDL_RenderDrawLine(renderer, x, y, x, length);
 	}
-**/
-	y = rect.y;
+
+	x = rect.x;
 	cell.w = cell_size_x;
 	cell.h = cell_size_y;
 
