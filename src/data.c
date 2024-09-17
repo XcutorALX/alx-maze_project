@@ -20,9 +20,9 @@ int saveMap(Grid *map)
 
 	fprintf(file, "%d\n", map->height);
 	fprintf(file, "%d\n", map->width);
-    
+
 	for (int i = 0; i < map->height; i++)
-	{	
+	{
 		for (int j = 0; j < map->width; j++)
 		{
 			fprintf(file, "%d", (map->cells)[i][j].type);
@@ -35,36 +35,42 @@ int saveMap(Grid *map)
 }
 
 /**
- * readMap - reads a map from a file
+ * loadMap - reads a map from a file
  *
+ * @height: the height of the map being read
+ * @width: the width of the map being read
+ *
+ * Return: NULL on failure else the address to the map array
  */
 
 int **loadMap(int *height, int *width)
 {
 	char *filename = "maze.map";
 	FILE *file = fopen(filename, "r");
-	
+	int **map, i, j;
+
 	if (file == NULL)
 	{
 		printf("Error opening file!\n");
-		return NULL;
+		return (NULL);
 	}
-	
+
 	fscanf(file, "%d", height);
 	fscanf(file, "%d", width);
 
-	int **map = (int **)malloc(*height * sizeof(int *));
-	for (int i = 0; i < *height; i++)
+	map = (int **)malloc(*height * sizeof(int *));
+
+	for (i = 0; i < *height; i++)
 		map[i] = (int *)malloc(*width * sizeof(int));
 
-	for (int i = 0; i < *height; i++)
+	for (i = 0; i < *height; i++)
 	{
-		for (int j = 0; j < *width; j++)
+		for (j = 0; j < *width; j++)
 			fscanf(file, "%1d", &map[i][j]);
-        }
+	}
 
-    fclose(file);
-    return (map);
+	fclose(file);
+	return (map);
 }
 
 /**
@@ -72,7 +78,7 @@ int **loadMap(int *height, int *width)
  *
  * @player: the player struct
  * @map: the map of the game
- * @local_map: the local map
+ * @local: the local map
  *
  * Return: 1 for success and 0 for failure
  */
@@ -112,15 +118,25 @@ int localMap(Player player, Grid *map, int **local)
 				if (x_index < 0 || x_index >= map->width)
 					local[y_index - player_y + 3][x_index - x_start] = 0;
 				else
-					local[y_index - player_y + 3][x_index - x_start] = cells[y_index][x_index].type;
+					local[y_index - player_y + 3][x_index - x_start] =
+						cells[y_index][x_index].type;
 			}
 		}
 	}
 	mirrorArray(local, 7, 13);
-
 	return (1);
 }
 
+/**
+ * mirrorArray - this function horizontally mirrors a
+ * 2d array of integers
+ *
+ * @arr: the array to be mirrored
+ * @rows: the number of rows in the array
+ * @cols: the number of columns in the array
+ *
+ * return: none
+ */
 void mirrorArray(int **arr, int rows, int cols)
 {
 	int start, end, temp, i;
@@ -135,7 +151,7 @@ void mirrorArray(int **arr, int rows, int cols)
 			temp = arr[i][start];
 			arr[i][start] = arr[i][end];
 			arr[i][end] = temp;
-		
+
 			start++;
 			end--;
 		}
@@ -152,17 +168,19 @@ void mirrorArray(int **arr, int rows, int cols)
  */
 int **create2DArray(int rows, int cols)
 {
-	int **array;
-	array = malloc(rows * sizeof(int*));
+	int **array, i;
+
+	array = malloc(rows * sizeof(int *));
+
 	if (array == NULL)
 	{
-        	printf("Memory allocation failed for rows.\n");
-        	return NULL;
+		printf("Memory allocation failed for rows.\n");
+		return (NULL);
 	}
 
-	for (int i = 0; i < rows; i++)
+	for (i = 0; i < rows; i++)
 	{
-		array[i] = (int*)malloc(cols * sizeof(int));
+		array[i] = (int *)malloc(cols * sizeof(int));
 		if (array[i] == NULL)
 		{
 			printf("Memory allocation failed for row %d.\n", i);
@@ -174,23 +192,4 @@ int **create2DArray(int rows, int cols)
 	}
 
 	return (array);
-}
-
-/**
- * free2DArray - this function frees a two dimensional array
- *
- * @array: the array
- * @rows: the size of the array
- *
- * Return: void
- */
-void free2DArray(int** array, int rows)
-{
-	int i;
-
-	for (int i = 0; i < rows; i++)
-	{
-		free(array[i]);
-	}
-	free(array);
 }

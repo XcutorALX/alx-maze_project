@@ -7,10 +7,14 @@
  *
  * @player: the player struct
  * @map: a map of the game
+ * @renderer: the SDL_Renderer struct
+ * @screen: the Screen struct with data on the screen
+ * @local: a local version of the map immediate to the player
  *
  * Return: 1 on success 0 on failure
  */
-int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, int **local)
+int render_map(Grid *map, Player player, SDL_Renderer *renderer,
+		Screen screen, int **local)
 {
 	SDL_Rect rect, cell;
 	int x, y, cell_size_x, cell_size_y, x_index,
@@ -19,68 +23,39 @@ int render_map(Grid *map, Player player, SDL_Renderer *renderer, Screen screen, 
 	view = player.fov;
 	deg = 150 - player.dir;
 	deg %= 360;
+
 	rect.x = 0.02 * screen.width;
 	rect.y = 0.02 * screen.height;
 	rect.w = screen.map_width;
 	rect.h = screen.map_height;
-	cell_size_y = rect.h / 7;
-	cell_size_x = rect.w / 13;
+
 	x = rect.x + rect.w / 2;
 	y = rect.y + rect.h / 2;
+
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderFillRect(renderer, &rect);
-	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
-	drawCircle(renderer, x, y, 0.02 * rect.w);
+
 	localMap(player, map, local);
-	draw_radial_cone(renderer, x, y, view, 60, 30, deg);
-	x = rect.x;
-	y = rect.y + cell_size_y + 1;
 
-	for (; y <= rect.y + rect.h - cell_size_y; y += cell_size_y)
-	{
-		length = rect.x + rect.w;
-		SDL_RenderDrawLine(renderer, x, y, length, y);
-	}
+	render_player_view(player, renderer, screen);
+	render_grid(map, renderer, rect, local);
 
-	y = rect.y;
-	x += cell_size_x + 1;
-	
-	for (; x <= rect.x + rect.w - cell_size_x; x += cell_size_x)
-	{
-		length = rect.y + rect.h;
-		SDL_RenderDrawLine(renderer, x, y, x, length);
-	}
-
-	x = rect.x;
-	cell.w = cell_size_x;
-	cell.h = cell_size_y;
-
-	for (y_index = 0; y_index < 7; y_index++)
-	{
-		for(x_index = 0; x_index < 13; x_index++)
-		{
-			if (local[y_index][x_index] == 1)
-			{
-				SDL_SetRenderDrawColor(renderer, 112, 112, 112, 255);
-				cell.x = x + (x_index * cell_size_x);
-				cell.y = y + (y_index * cell_size_y);
-				SDL_RenderFillRect(renderer, &cell);
-			}
-		}
-	}
 	return (1);
 }
-
 
 
 /**
  * render_background - this function renders the background of the maze
  *
  * @map: the map of the game
+ * @player: a struct with player info
+ * @screen: a struct with screen info
+ * @renderer: the SDL_Renderer struct
  *
  * Return: 1 on success else 0
  */
-int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *renderer)
+int render_background(Grid *map, Player *player, Screen *screen,
+		SDL_Renderer *renderer)
 {
 	float inc, angle, value;
 	Point vert, hor;
@@ -96,9 +71,9 @@ int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *r
 	{
 		if (ray.dir >= 360)
 			ray.dir = fmod(ray.dir, 360);
-        	else if (ray.dir < 0)
+		else if (ray.dir < 0)
 			ray.dir += 360;
-	
+
 		if (ray.dir != 0 && ray.dir != 180)
 			hor = check_collision_hor(map, &ray);
 		if (ray.dir != 90 && ray.dir != 270)
@@ -117,9 +92,13 @@ int render_background(Grid *map, Player *player, Screen *screen, SDL_Renderer *r
  * @vert: the vertical wall collision with the ray
  * @hor: the horizontal wall collision with the ray
  * @ray: the current ray being projected
+ * @column: the current column on the screen being rendered
+ * @player: a struct containing player info
+ * @renderer: the SDL_Renderer struct
  *
+ * Return: the height of the wall slice rendered
  */
-int render_wall(int column, Point vert, Point hor, Ray ray, 
+int render_wall(int column, Point vert, Point hor, Ray ray,
 		Player *player, SDL_Renderer *renderer)
 {
 	float value;
@@ -139,12 +118,12 @@ int render_wall(int column, Point vert, Point hor, Ray ray,
 		align = 1;
 		actual_distance = x * value;
 	}
-	align == 1 ? SDL_SetRenderDrawColor(renderer, 112, 112, 112, 255) : 
+	align == 1 ? SDL_SetRenderDrawColor(renderer, 112, 112, 112, 255) :
 		SDL_SetRenderDrawColor(renderer, 96, 96, 96, 255);
 	if (actual_distance == 0)
 		actual_distance = 1;
-	actual_height = height_const / actual_distance; 
-	SDL_RenderDrawLine(renderer, column, 240 - (actual_height / 2), 
+	actual_height = height_const / actual_distance;
+	SDL_RenderDrawLine(renderer, column, 240 - (actual_height / 2),
 			column, 240 + (actual_height / 2));
 
 	return (actual_height);
@@ -156,9 +135,12 @@ int render_wall(int column, Point vert, Point hor, Ray ray,
  * @column: the current column
  * @wall_height: the height of the wall
  * @renderer: the sdl renderer
+ * @screen: a struct containing game screen info
  *
+ * Return: none
  */
-void render_floor(int column, int wall_height, SDL_Renderer *renderer, Screen *screen)
+void render_floor(int column, int wall_height, SDL_Renderer *renderer,
+		Screen *screen)
 {
 	int start, end;
 
@@ -168,7 +150,7 @@ void render_floor(int column, int wall_height, SDL_Renderer *renderer, Screen *s
 
 	SDL_SetRenderDrawColor(renderer, 0, 129, 0, 255);
 	SDL_RenderDrawLine(renderer, column, start,
-                        column, end);
+			column, end);
 }
 
 /**
@@ -177,9 +159,11 @@ void render_floor(int column, int wall_height, SDL_Renderer *renderer, Screen *s
  * @column: the current column
  * @wall_height: the height of the wall
  * @renderer: the sdl renderer
+ * @screen: a struct containing game screen info
  *
  */
-void render_sky(int column, int wall_height, SDL_Renderer *renderer, Screen *screen)
+void render_sky(int column, int wall_height, SDL_Renderer *renderer,
+		Screen *screen)
 {
 	int start, end;
 
@@ -189,5 +173,5 @@ void render_sky(int column, int wall_height, SDL_Renderer *renderer, Screen *scr
 
 	SDL_SetRenderDrawColor(renderer, 70, 164, 255, 255);
 	SDL_RenderDrawLine(renderer, column, start,
-                        column, end);
+			column, end);
 }

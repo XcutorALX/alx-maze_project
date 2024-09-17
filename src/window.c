@@ -2,9 +2,10 @@
 #include "maze.h"
 
 /**
- * createWindow - creates an sdl window
+ * create_window - creates an sdl window
  *
- * window: a pointer to the window variable to store the result
+ * @screen: a pointer to the Screen struct
+ * @window: a pointer to the window variable to store the result
  *
  * Return: 0 on success and 1 on failure
  */
