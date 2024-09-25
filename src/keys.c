@@ -1,4 +1,4 @@
-#include "maze.h"
+#include "struct.h"
 
 /**
  * handle_key_event - handles the key event

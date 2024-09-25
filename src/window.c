@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "maze.h"
+#include "struct.h"
 
 /**
  * create_window - creates an sdl window

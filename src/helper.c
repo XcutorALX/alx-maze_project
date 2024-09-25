@@ -1,23 +1,26 @@
 #include "maze.h"
+#include "struct.h"
 #include <math.h>
 #include <stdlib.h>
 
 /**
- * check_collision_vert - this function checks vertical collision of a ray with a grid
+ * check_collision_vert - this function checks vertical
+ * collision of a ray with a grid
  *
  * @ray: the ray to be checked
- * @map: the map
+ * @grid: the map
  *
  * Return: 1 for collision 0 for no collision
  */
 Point check_collision_vert(Grid *grid, Ray *ray)
 {
 	Point vert;
-	Cell **map = grid->cells;
-	float xa, ya; 
+	Cell **map;
+	float xa, ya;
 	int collision, y_index, x_index;
 
-	if (ray->dir > 90 && ray->dir < 270 )
+	map  = grid->cells;
+	if (ray->dir > 90 && ray->dir < 270)
 	{
 		vert.x = floor(ray->pos.x / 64) * (64) - 1;
 		xa = -64;
@@ -27,19 +30,17 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 		vert.x = floor(ray->pos.x / 64) * (64) + 64;
 		xa = 64;
 	}
-
 	vert.y = ray->pos.y + (ray->pos.x - vert.x) * tan(ray->dir * (M_PI / 180.0));
 	ya = 64 * tan(ray->dir * (M_PI / 180.0));
 	ya = ya >= 0 ? ya : -1 * ya;
 	ya = (ray->dir < 180) ? -1 * ya : ya;
-
 	collision = 0;
 	y_index = floor((float)(vert.y) / (float)64);
-        x_index = floor(vert.x / 64);
+	x_index = floor(vert.x / 64);
 	while (x_index < grid->width && x_index >= 0 &&
 			y_index < grid->height && y_index >= 0 && collision == 0)
 	{
-		if ((&(map[ y_index ][ x_index ]))->type == 1)
+		if ((&(map[y_index][x_index]))->type == 1)
 			collision = 1;
 		else
 		{
@@ -47,9 +48,8 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 			vert.y += ya;
 		}
 		y_index = floor((float)(vert.y) / (float)64);
-                x_index = floor(vert.x / 64);
+		x_index = floor(vert.x / 64);
 	}
-
 	if (collision == 1)
 		return (vert);
 	vert.x = -1;
@@ -57,10 +57,11 @@ Point check_collision_vert(Grid *grid, Ray *ray)
 }
 
 /**
- * check_collision_hor - this function checks horizontal collision of a ray with a grid
+ * check_collision_hor - this function checks horizontal
+ * collision of a ray with a grid
  *
  * @ray: the ray
- * @map: the map
+ * @grid: the map
  *
  * Return: pointer to the collision
  */
@@ -73,27 +74,25 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 
 	if (ray->dir < 180)
 	{
-		hor.y = floor(ray->pos.y/64) * (64) - 1;
+		hor.y = floor(ray->pos.y / 64) * (64) - 1;
 		ya = -64;
 	}
 	else
 	{
-		hor.y = floor(ray->pos.y/64) * (64) + 64;
+		hor.y = floor(ray->pos.y / 64) * (64) + 64;
 		ya = 64;
 	}
-
 	hor.x = ray->pos.x + (ray->pos.y - hor.y) / tan(ray->dir * (M_PI / 180.0));
 	xa = 64 / tan(ray->dir * (M_PI / 180.0));
 	xa = xa >= 0 ? xa : -1 * xa;
 	xa = (ray->dir > 90  && ray->dir < 270) ? -1 * xa : xa;
-
 	collision = 0;
 	x_index = floor((float)(hor.x) / (float)64);
 	y_index = floor(hor.y / 64);
 	while (x_index < grid->width && x_index >= 0
 		&& y_index < grid->height && y_index >= 0 && collision == 0)
 	{
-		if ((&(map[ y_index ][ x_index ]))->type == 1)
+		if ((&(map[y_index][x_index]))->type == 1)
 			collision = 1;
 		else
 		{
@@ -103,7 +102,6 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 		x_index = floor((float)(hor.x) / (float)64);
 		y_index = floor(hor.y / 64);
 	}
-
 	if (collision == 1)
 		return (hor);
 	hor.x = -1;
@@ -112,50 +110,47 @@ Point check_collision_hor(Grid *grid, Ray *ray)
 
 
 /**
- * create_map - creates a map from a 2d array of 1s and 0s using the Grid struct
+ * create_map - creates a map from a 2d array of 1s
+ * and 0s using the Grid struct
  *
+ * @height: the height of the map
+ * @width: the width of the map
  * @arr: the array to be converted into a grid map
  *
  * Return: the Grid struct of maps
  */
-Grid *create_map(int **arr, int height , int width)
+Grid *create_map(int **arr, int height, int width)
 {
 	int i, j;
 	Grid *map;
 
 	map = malloc(sizeof(Grid));
-
-	if (map == NULL) {
+	if (map == NULL)
+	{
 		fprintf(stderr, "Memory allocation failed\n");
-		return NULL;
+		return (NULL);
 	}
-
 	map->cells = malloc(height * sizeof(Cell *));
-	if (map->cells == NULL) 
+	if (map->cells == NULL)
 	{
 		fprintf(stderr, "Memory allocation failed for row pointers\n");
-		free(map); // Clean up previously allocated memory
-		return NULL;
+		free(map);
+		return (NULL);
 	}
-
 	map->height = height;
 	map->width = width;
-
 	for (i = 0; i < height; i++)
 	{
 		map->cells[i] = malloc(width * sizeof(Cell));
-		if (map->cells[i] == NULL) 
+		if (map->cells[i] == NULL)
 		{
 			fprintf(stderr, "Memory allocation failed for row %d\n", i);
 			for (j = 0; j < i; j++)
-			{
 				free(map->cells[j]);
-			}
-            		free(map->cells);
-            		free(map);
-            		return NULL;
-        	}
-
+			free(map->cells);
+			free(map);
+			return (NULL);
+		}
 		for (j = 0; j < width; j++)
 		{
 			map->cells[i][j].type = arr[i][j];
@@ -164,38 +159,42 @@ Grid *create_map(int **arr, int height , int width)
 			map->cells[i][j].coord.x = j;
 		}
 	}
-
 	return (map);
 }
 
 /**
- * distance_sqrt - calculates the distance between two pts using square root method
+ * distance_sqrt - calculates the distance between two
+ * pts using square root method
  *
  * @p1: the first point
  * @p2: the second point
  *
  * Return: the distance between the points
  */
-int distance_sqrt(Point *p1, Point *p2) {
-    int distance;
-    distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
-    return distance;
+int distance_sqrt(Point *p1, Point *p2)
+{
+	int distance;
+
+	distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
+	return (distance);
 }
 
 /**
- * distance_flt - calculates the distance between two pts using square root method
+ * distance_flt - calculates the distance between two pts
+ * using square root method
  *
  * @p1: the first point
  * @p2: the second point
  *
  * Return: the distance between the points
  */
-float distance_flt(Point *p1, Point *p2) {
-    float distance;
-    distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
-    return distance;
-}
+float distance_flt(Point *p1, Point *p2)
+{
+	float distance;
 
+	distance = sqrt(pow(p2->x - p1->x, 2) + pow(p2->y - p1->y, 2));
+	return (distance);
+}
 
 /**
  * distance - this function calculates the distance between two points
@@ -205,19 +204,20 @@ float distance_flt(Point *p1, Point *p2) {
  * @deg: the angle between the points
  *
  * Return: the distance between the points
- */
-int distance(Point *p, Point *q, float deg)
-{
-	int value;
-	float adj_deg;
-
-	if (p == NULL || q == NULL)
-		return (0);
-
-	if ((p->x - q->x) == 0)
-		value = (p->y - q->y) / sin(deg * M_PI / 180);
-	else
-		value = (p->x - q->x) / cos(deg * M_PI / 180);
-
-	return (abs(value));
-}
+ *
+*int distance(Point *p, Point *q, float deg)
+*{
+*int value;
+*	float adj_deg;
+*
+*	if (p == NULL || q == NULL)
+*		return (0);
+*
+*	if ((p->x - q->x) == 0)
+*		value = (p->y - q->y) / sin(deg * M_PI / 180);
+*	else
+*		value = (p->x - q->x) / cos(deg * M_PI / 180);
+*
+*	return (abs(value));
+*}
+*/

@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "maze.h"
 
 /**
  * free2DArray - this function frees a two dimensional array

@@ -1,4 +1,9 @@
+#include "struct.h"
 #include "maze.h"
+#include <stddef.h>
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
 
 /**
  * saveMap - saves the map to a file
@@ -24,9 +29,8 @@ int saveMap(Grid *map)
 	for (int i = 0; i < map->height; i++)
 	{
 		for (int j = 0; j < map->width; j++)
-		{
 			fprintf(file, "%d", (map->cells)[i][j].type);
-		}
+		
 		fprintf(file, "\n");
 	}
 

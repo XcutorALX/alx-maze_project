@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "maze.h"
+#include "struct.h"
 
 /**
  * print2DArray - this function prints a 2d array of integers

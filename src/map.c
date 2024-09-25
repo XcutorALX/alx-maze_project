@@ -1,4 +1,5 @@
 #include "maze.h"
+#include "struct.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -7,8 +8,8 @@
  *
  * @map: a map of the game
  * @renderer: the SDL renderer
- * @screen: the screen struct
- * @local: the local map indicating walls
+ * @local: a local map of the player's immediate surrounding
+ * @rect: an SDL_Rect struct
  *
  * Return: 1 on success 0 on failure
  */
@@ -38,7 +39,7 @@ int render_grid(Grid *map, SDL_Renderer *renderer, SDL_Rect rect, int **local)
 	cell.h = cell_size_y;
 	for (y_index = 0; y_index < 7; y_index++)
 	{
-		for(x_index = 0; x_index < 13; x_index++)
+		for (x_index = 0; x_index < 13; x_index++)
 		{
 			if (local[y_index][x_index] == 1)
 			{
@@ -53,7 +54,8 @@ int render_grid(Grid *map, SDL_Renderer *renderer, SDL_Rect rect, int **local)
 }
 
 /**
- * render_player_view - this function renders the player's view (player, circle, and FOV)
+ * render_player_view - this function renders the
+ * player's view (player, circle, and FOV)
  *
  * @player: the player struct
  * @renderer: the SDL renderer
@@ -78,7 +80,7 @@ int render_player_view(Player player, SDL_Renderer *renderer, Screen screen)
 	x = rect.x + rect.w / 2;
 	y = rect.y + rect.h / 2;
 
-	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255); 
+	SDL_SetRenderDrawColor(renderer, 0, 255, 68, 255);
 	drawCircle(renderer, x, y, 0.02 * rect.w);
 	draw_radial_cone(renderer, x, y, view, 60, 30, deg);
 
